@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,7 +56,7 @@
         <div id="step9" class="step">
             <h2>Melisa & Arel</h2>
             <p id="arelMessage"></p>
-            <button onclick="nextStep(10)">Devam Et</button>
+            <button onclick="restart()">Tekrar Başla</button>
         </div>
     </div>
     <script>
@@ -86,6 +86,7 @@
         function startQuestions() {
             currentStep = 0;
             answers = [];
+            document.getElementById('step1').classList.remove('active');
             nextQuestion();
         }
         
@@ -113,15 +114,16 @@
         }
         
         function analyzeAnswers() {
+            let counts = {};
+            answers.forEach(answer => {
+                counts[answer] = (counts[answer] || 0) + 1;
+            });
+
+            let mostFrequent = Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b);
+            
+            document.getElementById('question-container').classList.remove('active');
             document.getElementById('step9').classList.add('active');
-            let mostFrequent = answers.sort((a,b) => 
-                answers.filter(v => v===a).length - answers.filter(v => v===b).length
-            ).pop();
             document.getElementById('arelMessage').innerText = messages[mostFrequent] || "Cevaplarınıza göre analiz yapıldı.";
-        }
-        
-        function nextStep(step) {
-            document.getElementById('step' + step).classList.add('active');
         }
         
         function restart() {
