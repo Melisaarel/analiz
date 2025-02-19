@@ -1,134 +1,85 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melisa & Arel: İçsel Yolculuk</title>
+    <title>Benim Hikayem Filtre</title>
     <style>
         body {
-            font-family: 'Merriweather', serif;
             text-align: center;
-            background-color: #0d0d0d;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
         }
-        .container {
-            max-width: 600px;
-            margin: auto;
+        #video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 400px;
         }
-        .step {
+        #overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 400px;
+            pointer-events: none;
+        }
+        #canvas {
             display: none;
         }
-        .active {
-            display: block;
-            animation: fadeIn 1s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        button {
-            background-color: #2c2c2c;
-            color: #e0e0e0;
-            border: 1px solid #444;
-            padding: 15px;
+        #capture-btn, #download-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
             cursor: pointer;
-            margin-top: 20px;
-            font-size: 16px;
         }
-        button:hover {
-            background-color: #444;
+        #hashtags {
+            margin-top: 20px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="step1" class="step active">
-            <h2>Yolculuğun Başlıyor</h2>
-            <p>"Bu yolculuk sana ayna tutacak. Soruları yanıtlamaya hazır mısın?"</p>
-            <button onclick="startQuestions()">Başla</button>
-        </div>
-        <div id="question-container" class="step">
-            <h2 id="question-text"></h2>
-            <div class="choices" id="choices-container"></div>
-        </div>
-        <div id="step9" class="step">
-            <h2>Melisa & Arel</h2>
-            <p id="arelMessage"></p>
-            <button onclick="restart()">Tekrar Başla</button>
-        </div>
-    </div>
-    <script>
-        const questions = [
-            { q: "1-Hayatında şu an eksikliğini derinden hissettiğin, ruhuna en çok yabancı gelen şey nedir?", choices: ["Bağışlama", "Tutku", "Özgüven", "Huzur"] },
-            { q: "2-Kendini en çok nerede kaybettiğini hissediyorsun?", choices: ["Geçmişte", "Toplumsal beklentilerde", "Başarısızlık korkusunda", "Hayallerini unutarak"] },
-            { q: "3-Geçmişindeki hangi duygu, sende en kalıcı izleri bırakmakta?", choices: ["Öfke", "Korku", "Üzüntü", "Yalnızlık"] },
-            { q: "4-Hayatında bir kapıyı aralama şansın olsa, hangi kapının ardındaki bilinmezi keşfetmeyi seçerdin?", choices: ["Affetme Kapısı", "Kendi Gücümü Bulma Kapısı", "Bilinmeyene Cesaret Kapısı", "Kaybolan Tutkular Kapısı"] },
-            { q: "5-Kendi iç sesin sana en çok ne söylüyor?", choices: ["Harekete geç", "Daha çok sev", "Affet", "Kendini keşfet"] },
-            { q: "6-En büyük korkun ne?", choices: ["Başarısız olmak", "Sevilmemek", "Kendi potansiyelimi kullanamamak", "Yalnız kalmak"] },
-            { q: "7-Hayatta neye en çok ihtiyaç duyuyorsun?", choices: ["Huzur", "Cesaret", "İlham", "Bağlılık"] }
-        ];
-        
-        const messages = {
-            "Bağışlama": "Affetmek, ruhunun zincirlerinden kurtulmasıdır...",
-            "Tutku": "Tutkularını takip et, çünkü onlar seni gerçekten kim olduğunla buluşturur...",
-            "Özgüven": "Özgüven, içindeki gücün en saf yansımasıdır...",
-            "Huzur": "Huzuru dışarıda arama, çünkü gerçek huzur içindedir...",
-            "Korku": "Korkuların seni tanımlamaz; onlar yalnızca geçici bir yankıdır...",
-            "Geçmiş": "Geçmişin yükünü omuzlarından at, çünkü o sadece seni geride tutan bir anıdır...",
-            "Cesaret": "Kendi yolunu çiz, çünkü hiçbir harita seni tam olarak senin olduğun yere götüremez..."
-        };
-        
-        let answers = [];
-        let currentStep = 0;
-        
-        function startQuestions() {
-            currentStep = 0;
-            answers = [];
-            document.getElementById('step1').classList.remove('active');
-            nextQuestion();
-        }
-        
-        function nextQuestion() {
-            if (currentStep < questions.length) {
-                document.getElementById('question-container').classList.add('active');
-                document.getElementById('question-text').innerText = questions[currentStep].q;
-                let choicesContainer = document.getElementById('choices-container');
-                choicesContainer.innerHTML = '';
-                questions[currentStep].choices.forEach(choice => {
-                    let btn = document.createElement('button');
-                    btn.innerText = choice;
-                    btn.onclick = () => storeAnswer(choice);
-                    choicesContainer.appendChild(btn);
-                });
-            } else {
-                analyzeAnswers();
-            }
-        }
-        
-        function storeAnswer(choice) {
-            answers.push(choice);
-            currentStep++;
-            nextQuestion();
-        }
-        
-        function analyzeAnswers() {
-            let counts = {};
-            answers.forEach(answer => {
-                counts[answer] = (counts[answer] || 0) + 1;
-            });
+    <h1>Benim Hikayem Filtre</h1>
+    <p>Kameranızı açın ve kitap kapağındaki yerinizi alın!</p>
+    <video id="video" autoplay></video>
+    <img id="overlay" src="book_cover_no_character.png" alt="Book Cover Overlay">
+    <canvas id="canvas"></canvas>
+    <br>
+    <button id="capture-btn">Fotoğraf Çek</button>
+    <a id="download-btn" style="display:none;" download="benim_hikayem.png">İndir</a>
+    <p id="hashtags">#MelisaBenimHikayem #KitapKapagindaBen #BenimHikayemChallenge</p>
 
-            let mostFrequent = Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b);
-            
-            document.getElementById('question-container').classList.remove('active');
-            document.getElementById('step9').classList.add('active');
-            document.getElementById('arelMessage').innerText = messages[mostFrequent] || "Cevaplarınıza göre analiz yapıldı.";
-        }
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('capture-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const overlay = document.getElementById('overlay');
         
-        function restart() {
-            window.location.reload();
-        }
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Kamera erişim hatası!", err);
+            });
+        
+        captureBtn.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            context.drawImage(overlay, 0, 0, canvas.width, canvas.height);
+            
+            downloadBtn.href = canvas.toDataURL('image/png');
+            downloadBtn.style.display = 'block';
+        });
     </script>
 </body>
 </html>
